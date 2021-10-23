@@ -1,8 +1,19 @@
 /* eslint-disable no-console */
 const express = require('express');
+const routes = require('./routes');
+const pkg = require('./package.json');
+const config = require('./config');
+const { port, dbUrl, secret } = config;
+
+
 // const cors = require('cors');
 
 const app = express();
+app.set('config', config);
+app.set('pkg', pkg);
+
+
+
 
 // const errorHandler = require('./middleware/errors');
 // const authMiddleware = require('./middleware/auth');
@@ -15,7 +26,13 @@ const app = express();
 //   createSocketMessage,
 // } = require('./controller/messageController');
 
-const port = process.env.PORT || 8000;
+
+app.use(express.json())
+
+app.use('/api/user', require('./routes/auth-route'))
+// app.get( '/',( req , res)=>{ 
+//   res.json({ mensaje : 'vivo'}); 
+// });
 // const socketPort = 8000;
 
 // middlewares
@@ -27,10 +44,10 @@ const port = process.env.PORT || 8000;
 // app.use(errorHandler);
 
 // Link to Routes
-// routes(app, (err) => {
-//   if (err) {
-//     throw err;
-//   }
+routes(app, (err) => {
+  if (err) {
+    throw err;
+  }
 
   // // sends out the 10 most recent messages from recent to old
   // const emitMostRecentMessges = () => {
@@ -58,6 +75,6 @@ const port = process.env.PORT || 8000;
   app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`);
   });
-// });
+});
 
 module.exports = app;
